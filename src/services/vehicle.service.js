@@ -1,0 +1,51 @@
+const api_url = process.env.REACT_APP_API_URL;
+
+const getVehicleByCustomerId = async (id, token) => {
+  const requestOptions = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "x-access-token": token,
+    },
+  };
+  const response = await fetch(`${api_url}/api/vehicle/${id}`, requestOptions);
+
+  return response;
+};
+
+const getVehicleByCustomerHashId = async (id, token) => {
+  const requestOptions = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "x-access-token": token,
+    },
+  };
+  const response = await fetch(`${api_url}/api/vehiclehash/${id}`, requestOptions);
+
+  return response;
+};
+
+const addVehicle = async (formData, token) => {
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-access-token": token,
+    },
+    body: JSON.stringify(formData),
+  };
+
+  const response = await fetch(`${api_url}/api/vehicle`, requestOptions);
+  return response;
+};
+
+
+
+
+const VehicleRequest = {
+  getVehicleByCustomerId,
+  getVehicleByCustomerHashId,
+  addVehicle,
+};
+export default VehicleRequest;
