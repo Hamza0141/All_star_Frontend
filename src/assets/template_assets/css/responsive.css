@@ -2,6 +2,9 @@
 	.page-wrapper{
 		overflow: hidden;
 	}
+		.toggleWrapper{
+		display: none;
+	}
 	
 }
 
@@ -28,6 +31,9 @@
 	.main-header.header-style-two .sticky-header .auto-container {
 		padding: 0 15px;
 	}
+		.toggleWrapper{
+		display: none;
+	}
 }
 
 @media only screen and (max-width: 1199px){
@@ -43,6 +49,9 @@
 	.header-top .right-column {
 	    display: none;
 	}
+		.toggleWrapper{
+		display: none;
+	}
 }
 
 @media only screen and (max-width: 1139px){
@@ -56,6 +65,12 @@
 	}
 	.main-header.header-style-two .header-info-right {
 		display: none;
+	}
+	.toggleWrapper{
+		display: block;
+		  justify-self: end;
+		  margin-right: 5%;
+		  color: black;
 	}
 }
 
@@ -87,7 +102,6 @@
 	.services-section {
 		padding-bottom: 70px;
 	}
-	
 
 }
 

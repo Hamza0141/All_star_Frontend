@@ -671,3 +671,6 @@ input:disabled {
   margin: 5px 0;
 }
 
+.toggleWrapper a{
+  color:black !important;
+}

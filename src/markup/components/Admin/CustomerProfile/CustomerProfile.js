@@ -92,6 +92,8 @@ function CustomerProfile({ id }) {
     fetchData();
   }, [id, token]);
 
+  console.log();
+
   useEffect(() => {
     if (singleCustomer && singleCustomer.customer_hash) {
       const fetchOrders = async () => {
@@ -231,6 +233,7 @@ function CustomerProfile({ id }) {
                   <th>Serial</th>
                   <th>Color</th>
                   <th>Mileage</th>
+                  <th>Edit</th>
                 </tr>
               </thead>
               <tbody>
@@ -243,6 +246,15 @@ function CustomerProfile({ id }) {
                     <td>{vehicle.vehicle_serial}</td>
                     <td>{vehicle.vehicle_color}</td>
                     <td>{vehicle.vehicle_mileage}</td>
+                    <td>
+                      <Link to={`/updatevehicle/${vehicle?.vehicle_id}`}>
+                        <FontAwesomeIcon
+                          icon={faPenToSquare}
+                          style={{ cursor: "pointer", marginRight: "10px" }}
+                          className="cust_Data_value"
+                        />
+                      </Link>
+                    </td>
                   </tr>
                 ))}
               </tbody>

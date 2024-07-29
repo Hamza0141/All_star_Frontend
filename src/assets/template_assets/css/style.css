@@ -3643,7 +3643,7 @@ img {
 }
 
 .main-header.header-style-three .header-upper.style-three .logo-box .logo {
-    padding: 22px 0px;
+    padding: 10px 0px;
 }
 
 .main-header.header-style-three .header-upper.style-three .main-menu .navigation>li {
@@ -6191,7 +6191,9 @@ img {
 }
 
 
-
+.logo{
+    padding: 10px !important;
+}
 
 
 

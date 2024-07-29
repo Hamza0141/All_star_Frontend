@@ -3,11 +3,16 @@ import { Table } from "react-bootstrap";
 import customerService from "../../../../services/customer.service";
 import serviceRequest from "../../../../services/service.service";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHandPointer } from "@fortawesome/free-solid-svg-icons";
+import {
+  faHandPointer,
+  faPenToSquare,
+} from "@fortawesome/free-solid-svg-icons";
+
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../../Contexts/AuthContext";
 import VehicleRequest from "../../../../services/vehicle.service";
 import orderService from "../../../../services/order.service";
+import employeeService from "../../../../services/employee.service";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -20,6 +25,8 @@ function Order() {
   const [selectedServiceIds, setSelectedServiceIds] = useState([]);
   const [availableService, setAvailableService] = useState([]);
   const [customerFlag, setCustomerFlag] = useState(true);
+  const [availableEmployee, setAvailableEmployee] = useState([]);
+  const [selectedEmployee, setSelectedEmployee] = useState("");
   const [additionalRequests, setAdditionalRequests] = useState({
     additional_request: "",
     price: 0,
@@ -29,19 +36,22 @@ function Order() {
 
   const { employee } = useAuth();
   const token = employee ? employee.employee_token : null;
-
+console.log(availableEmployee)
   useEffect(() => {
     const fetchData = async () => {
       try {
         const customerResponse = await customerService.getAllCustomer(token);
         const serviceResponse = await serviceRequest.getAllService(token);
+        const availableEmployee = await employeeService.getAllEmployees(token);
         if (!customerResponse.ok || !serviceResponse.ok) {
           throw new Error("Failed to fetch data");
         }
         const customerData = await customerResponse.json();
         const serviceData = await serviceResponse.json();
+        const employeeData = await availableEmployee.json();
         setCustomer(customerData.data);
         setAvailableService(serviceData);
+        setAvailableEmployee(employeeData.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -49,7 +59,6 @@ function Order() {
 
     fetchData();
   }, []);
-
   const filteredCustomer = customer.filter((cust) =>
     Object.values(cust).some((val) =>
       val.toString().toLowerCase().includes(searchInput.toLowerCase())
@@ -91,13 +100,20 @@ const selectedServices = (serviceID) => {
     // If present, remove it from the array
     setSelectedServiceIds((prevIds) => prevIds.filter((id) => id !== serviceID));
   }
-  console.log(selectedServiceIds);
 };
 
+ const handleEmployeeChange = (event) => {
+   setSelectedEmployee(event.target.value);
+ };
   const handleSubmitOrder = () => {
  if (!selectedServiceIds || selectedServiceIds.length === 0) {
    // If no services are selected, display an error message
    toast.error("Please select at least one service.");
+   return; // Stop further execution
+ }
+ if (!selectedEmployee || selectedEmployee.length === 0) {
+   // If no services are selected, display an error message
+   toast.error("Please assign to employee.");
    return; // Stop further execution
  }
     const orderData = {
@@ -107,6 +123,7 @@ const selectedServices = (serviceID) => {
       order_total_price: additionalRequests.price,
       additional_request: additionalRequests.additional_request,
       service_ids: selectedServiceIds,
+      assigned_employee_id: selectedEmployee,
       order_status: "Received",
       service_status: "In Progress",
     };
@@ -216,7 +233,14 @@ const selectedServices = (serviceID) => {
               </p>
             </div>
             <div className="cust-Key-value">
-              <p className="cust-Key">Edit</p>
+              <p className="cust-Key">Edit :</p>
+              <Link to={`/update-customer/${singleCustomer?.customer_hash}`}>
+                <FontAwesomeIcon
+                  icon={faPenToSquare}
+                  style={{ cursor: "pointer", marginRight: "10px" }}
+                  className="cust_Data_value"
+                />
+              </Link>
             </div>
           </div>
         )}
@@ -246,7 +270,16 @@ const selectedServices = (serviceID) => {
               <p className="cust-value">{selectedVehicle?.vehicle_serial}</p>
             </div>
             <div className="cust-Key-value">
-              <p className="cust-Key">Edit:</p>
+              <p className="cust-Key">Edit :</p>
+              <td>
+                <Link to={`/updatevehicle/${selectedVehicle?.vehicle_id}`}>
+                  <FontAwesomeIcon
+                    icon={faPenToSquare}
+                    style={{ cursor: "pointer", marginRight: "10px" }}
+                    className="cust_Data_value"
+                  />
+                </Link>
+              </td>
               <p className="cust-value"></p>
             </div>
           </div>
@@ -276,52 +309,74 @@ const selectedServices = (serviceID) => {
 
         {/* Display additional request */}
         {selectedVehicle && (
-          <div className="additional_request">
-            <h3 className="title-header">Additional Requests</h3>
-            <div className="inputs">
-              <div className="additional_request_input">
-                <textarea
-                  type="text"
-                  value={additionalRequests.additional_request} // Set value to state value
-                  onChange={(e) =>
-                    setAdditionalRequests((prev) => ({
-                      ...prev,
-                      additional_request: e.target.value,
-                    }))
-                  }
-                  placeholder="Additional Request"
-                />
+          <>
+            <div className="additional_request">
+              <h3 className="title-header">Additional Requests</h3>
+              <div className="inputs">
+                <div className="additional_request_input">
+                  <textarea
+                    type="text"
+                    value={additionalRequests.additional_request} // Set value to state value
+                    onChange={(e) =>
+                      setAdditionalRequests((prev) => ({
+                        ...prev,
+                        additional_request: e.target.value,
+                      }))
+                    }
+                    placeholder="Additional Request"
+                  />
+                </div>
+                <div className="priceInput">
+                  <input
+                    type="number"
+                    value={additionalRequests.price}
+                    onChange={(e) =>
+                      setAdditionalRequests((prev) => ({
+                        ...prev,
+                        price: e.target.value,
+                      }))
+                    }
+                    placeholder="Price"
+                  />
+                </div>
               </div>
-              <div className="priceInput">
-                <input
-                  type="number"
-                  value={additionalRequests.price}
-                  onChange={(e) =>
-                    setAdditionalRequests((prev) => ({
-                      ...prev,
-                      price: e.target.value,
-                    }))
-                  }
-                  placeholder="Price"
-                />
+              <div className="form-group col-md-12 employeeSelection">
+                <h3 className="title-header">Assign To Employee</h3>
+                <select
+                  name="company_role"
+                  value={selectedEmployee}
+                  onChange={handleEmployeeChange}
+                  className="custom-select-box"
+                >
+                  <option value="" disabled>
+                    Select an employee
+                  </option>
+                  {availableEmployee.map((employee) => (
+                    <option
+                      key={employee.employee_id}
+                      value={employee.employee_id}
+                    >
+                      {`${employee.employee_first_name} ${employee.employee_last_name}`}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="submitBotton">
+                <button
+                  className="btn-style-one"
+                  type="button"
+                  onClick={handleSubmitOrder}
+                  data-loading-text="Please wait..."
+                >
+                  SUBMIT ORDER
+                </button>
               </div>
             </div>
-            <div className="submitBotton">
-              <button
-                className="btn-style-one"
-                type="button"
-                onClick={handleSubmitOrder}
-                data-loading-text="Please wait..."
-              >
-                SUBMIT ORDER
-              </button>
-            </div>
-          </div>
+          </>
         )}
 
         {/* Display vehicle information */}
         {!selectedVehicle && vehicle && (
-                    
           <div className="vehicleInfo">
             <h2>Vehicle Information</h2>
             <Table striped bordered hover>
@@ -337,7 +392,7 @@ const selectedServices = (serviceID) => {
                   <th>Choose</th>
                 </tr>
               </thead>
- 
+
               <tbody>
                 {vehicle.map((v) => (
                   <tr key={v.vehicle_id}>
@@ -360,8 +415,8 @@ const selectedServices = (serviceID) => {
                 ))}
               </tbody>
             </Table>
-            </div>
-            )}
+          </div>
+        )}
       </div>
     </section>
   );

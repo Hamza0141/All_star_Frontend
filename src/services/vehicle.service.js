@@ -26,6 +26,22 @@ const getVehicleByCustomerHashId = async (id, token) => {
   return response;
 };
 
+const getVehicleByVehicleId = async (vehicleId, token) => {
+  const requestOptions = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "x-access-token": token,
+    },
+  };
+  const response = await fetch(
+    `${api_url}/api/vehicleid/${vehicleId}`,
+    requestOptions
+  );
+
+  return response;
+};
+
 const addVehicle = async (formData, token) => {
   const requestOptions = {
     method: "POST",
@@ -40,6 +56,19 @@ const addVehicle = async (formData, token) => {
   return response;
 };
 
+const updateVehicle = async (id, formData, token) => {
+  const requestOptions = {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      "x-access-token": token,
+    },
+    body: JSON.stringify(formData),
+  };
+  const response = await fetch(`${api_url}/api/vehicle/${id}`, requestOptions);
+  return response;
+};
+
 
 
 
@@ -47,5 +76,7 @@ const VehicleRequest = {
   getVehicleByCustomerId,
   getVehicleByCustomerHashId,
   addVehicle,
+  updateVehicle,
+  getVehicleByVehicleId,
 };
 export default VehicleRequest;

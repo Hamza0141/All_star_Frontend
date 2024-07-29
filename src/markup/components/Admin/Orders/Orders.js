@@ -43,7 +43,7 @@ function Orders() {
       <div className="auto-container">
         <div className="contact-title">
           <h2>Orders</h2>
-          { orders && orders.length > 0 && (
+          {orders && orders.length > 0 && (
             <Table striped bordered hover>
               <thead>
                 <tr>
@@ -52,6 +52,7 @@ function Orders() {
                   <th>Vehicle</th>
                   <th>Order Date</th>
                   <th>Received By</th>
+                  <th>Assigned To</th>
                   <th>Order Status</th>
                   <th>Edit/View</th>
                 </tr>
@@ -85,6 +86,12 @@ function Orders() {
                       <p>
                         {order.employee_first_name + " "}
                         {order.employee_last_name}
+                      </p>
+                    </td>
+                    <td>
+                      <p>
+                        {order.assigned_employee_first_name + " "}
+                        {order.assigned_employee_last_name}
                       </p>
                     </td>
                     <td>{order.order_status}</td>

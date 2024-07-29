@@ -45,6 +45,7 @@ import PrivateAuthRoute from './markup/components/Auth/PrivateAuthRoute';
 import About from './markup/pages/About';
 import Service from './markup/pages/Service';
 import Contact from './markup/pages/Contact';
+import UpdateVehiclePage from './markup/pages/admin/UpdateVehiclePage';
 
 
 function App() {
@@ -131,6 +132,10 @@ function App() {
         <Route
           path="/admin/order/update_order/:hash"
           element={<UpdateOrderPage />}
+        />
+        <Route
+          path="/updatevehicle/:vehicleId"
+          element={<UpdateVehiclePage />}
         />
         <Route
           path="/admin/Profile"
