@@ -55,8 +55,6 @@ const updateCustomer= async (id, token, formData) => {
   return response;
 };
 
-
-
 const customerService = {
   createCustomerService,
   getAllCustomer,
